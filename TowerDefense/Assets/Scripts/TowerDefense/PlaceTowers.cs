@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlaceTowers : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class PlaceTowers : MonoBehaviour
     RectTransform canvasRect;
     RectTransform panelRect;
     TowerSpawn towerSpawn;
+    public GameObject selectedTower;
+    public GameObject[] towers = new GameObject[3];
+    public Button[] buttons = new Button[3];
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +25,13 @@ public class PlaceTowers : MonoBehaviour
         panelRect = buildTowerPanel.GetComponent<RectTransform>();
 
         buildTowerPanel.SetActive(false);
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].GetComponent<Image>().color = new Color(0.953f, 0.941f, 0.843f, 1);
+        }
+
+        buttons[0].GetComponent<Image>().color = new Color(1, 0.749f, 0.525f, 1);
     }
 
     // Update is called once per frame
@@ -58,9 +70,43 @@ public class PlaceTowers : MonoBehaviour
                             ((panelPosition.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f)));
 
                         panelRect.anchoredPosition = worldObjectScreenPosition;
+
+                        TowerInfo towerStats = selectedTower.GetComponent<TowerInfo>();
+
+                        if (towerStats.level <= 0 && ResourceManager.gold >= towerStats.costs[0])
+                        {
+                            ResourceManager.gold -= towerStats.costs[0];
+                            GameObject tower = GameObject.Instantiate(selectedTower,
+                                new Vector3(towerSpawn.transform.position.x, towerSpawn.transform.position.y + 2,
+                                towerSpawn.transform.position.z), towerSpawn.transform.rotation);
+
+                            towerSpawn.tower = tower;
+                            TowerInfo currentTower = tower.GetComponent<TowerInfo>();
+                            currentTower.level = 1;
+                        }
                     }
+                }
+                else if (hit.collider.gameObject.CompareTag("Tower"))
+                {
+
                 }
             }
         }
+    }
+
+    public void changeSelectedTower(int index)
+    {
+        selectedTower = towers[index];
+
+        
+        for (int i = 0; i < buttons.Length; i++) 
+        {
+            buttons[i].GetComponent<Image>().color = new Color(0.953f, 0.941f, 0.843f, 1);
+        }
+
+        buttons[index].GetComponent<Image>().color = new Color(1, 0.749f, 0.525f, 1);
+        
+
+
     }
 }

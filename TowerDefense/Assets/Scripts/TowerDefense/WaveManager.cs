@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaveManager : MonoBehaviour
 {
-    public GameObject[] waypoints = new GameObject[5];
+    public GameObject[] waypoints = new GameObject[7];
     public GameObject enemyPrefab;
     public GameObject spawnPoint;
 
@@ -67,6 +67,8 @@ public class WaveManager : MonoBehaviour
             if (spawnTimer >= spawnRate)
             {
                 GameObject enemy = Object.Instantiate(enemyPrefab, spawnPoint.transform.position, Quaternion.identity);
+                EnemyMovementWaypoint enemyScript = enemy.GetComponent<EnemyMovementWaypoint>();
+                enemyScript.health = 6;
                 
                 //Initialize the enemy object (i.e. give it the waypoints, start it moving)
                 EnemyMovementWaypoint enemyMovementWaypoint = enemy.GetComponent<EnemyMovementWaypoint>();

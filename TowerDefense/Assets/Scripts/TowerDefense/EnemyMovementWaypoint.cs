@@ -8,6 +8,7 @@ public class EnemyMovementWaypoint : MonoBehaviour
     public GameObject[] waypoints;              //This will be assigned by the WaveManager
     public UnityEngine.AI.NavMeshAgent agent;
     public int waypointIndex = 0;
+    public int health = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +18,11 @@ public class EnemyMovementWaypoint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (health <= 0)
+        {
+            ResourceManager.IncreaseGold(3);
+            Destroy(gameObject);
+        }
     }
 
     public void StartMoving()
@@ -47,9 +52,9 @@ public class EnemyMovementWaypoint : MonoBehaviour
     {
         if (collision.collider.gameObject.CompareTag("TowerBall"))
         {
-            Destroy(collision.collider.gameObject);     //remove bullet
-            ResourceManager.IncreaseGold(1);            //increase gold
-            Destroy(gameObject);                        //delete unit - this unit only has 1 HP (1 shot kill)
+            health--;
+            Destroy(collision.collider.gameObject);
+                           
         }
     }
 

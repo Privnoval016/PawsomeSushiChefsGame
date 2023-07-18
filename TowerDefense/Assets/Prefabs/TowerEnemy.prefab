@@ -177,6 +177,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  spawnPoint: {fileID: 0}
+  - {fileID: 0}
   agent: {fileID: 0}
   waypointIndex: 0
