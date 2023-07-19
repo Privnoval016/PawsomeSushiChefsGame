@@ -68,7 +68,7 @@ public class WaveManager : MonoBehaviour
             {
                 GameObject enemy = Object.Instantiate(enemyPrefab, spawnPoint.transform.position, Quaternion.identity);
                 EnemyMovementWaypoint enemyScript = enemy.GetComponent<EnemyMovementWaypoint>();
-                enemyScript.health = 6;
+                enemyScript.health = 1;
                 
                 //Initialize the enemy object (i.e. give it the waypoints, start it moving)
                 EnemyMovementWaypoint enemyMovementWaypoint = enemy.GetComponent<EnemyMovementWaypoint>();

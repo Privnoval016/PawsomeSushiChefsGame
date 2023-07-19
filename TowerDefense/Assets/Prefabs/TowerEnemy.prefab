@@ -180,3 +180,4 @@ MonoBehaviour:
   - {fileID: 0}
   agent: {fileID: 0}
   waypointIndex: 0
+  health: 1
