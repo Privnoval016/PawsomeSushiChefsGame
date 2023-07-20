@@ -10,7 +10,7 @@ public class ResourceManager : MonoBehaviour
     public static int gold = 0;         //Static variables belong to the class,
                                         //only one allowed for all instances of the class.
                                         //Can be accessed without creating a new object.
-    public int startingGold = 10;
+    public int startingGold = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +28,7 @@ public class ResourceManager : MonoBehaviour
 
     void SetGoldText()
     {
-        goldText.text = "Gold: " + gold;
+        goldText.text = "$ " + gold;
     }
 
     //Static method belongs to the class and doesn't need any instance to call it.

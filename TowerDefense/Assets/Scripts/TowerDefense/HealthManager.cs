@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -33,7 +33,13 @@ public class HealthManager : MonoBehaviour
 
     void SetHealthText()
     {
-        healthText.text = "Health: " + health;
+        string text = "";
+        for (int i = 0; i < health; i++)
+        {
+            text += "♥";
+        }
+        healthText.text = text;
+
     }
 
     //Static method belongs to the class and doesn't need any instance to call it.

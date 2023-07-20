@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class WaveManager : MonoBehaviour
 {
     public GameObject[] waypoints = new GameObject[7];
-    public GameObject enemyPrefab;
+    public GameObject[] enemyModels = new GameObject[3];
     public GameObject spawnPoint;
 
     public float spawnTimer = 0;
@@ -15,8 +16,12 @@ public class WaveManager : MonoBehaviour
     public float waveTimer = 0;
     public float waveRate = 5.0f;
     public int waveNumber = 0;
-    public float agentSpeedIncrease = 0;
-
+    public float agentSpeed = 0;
+    public float health = 2;
+    public float damage = 1;
+    public float gold = 1;
+    public GameObject currentEnemy;
+    public TMP_Text waveText;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +54,12 @@ public class WaveManager : MonoBehaviour
                     case 3:
                         StartWave3();
                         break;
+                    case 4:
+                        StartWave4();
+                        break;
+                    case 5:
+                        StartWave5();
+                        break;
                     default:
                         NoWaves();
                         break;
@@ -66,18 +77,18 @@ public class WaveManager : MonoBehaviour
             spawnTimer += Time.deltaTime;
             if (spawnTimer >= spawnRate)
             {
-                GameObject enemy = Object.Instantiate(enemyPrefab, spawnPoint.transform.position, Quaternion.identity);
+                GameObject enemy = Object.Instantiate(currentEnemy, spawnPoint.transform.position, Quaternion.identity);
                 EnemyMovementWaypoint enemyScript = enemy.GetComponent<EnemyMovementWaypoint>();
-                enemyScript.health = 1;
+                enemyScript.health = (int)health;
                 
                 //Initialize the enemy object (i.e. give it the waypoints, start it moving)
                 EnemyMovementWaypoint enemyMovementWaypoint = enemy.GetComponent<EnemyMovementWaypoint>();
                 enemyMovementWaypoint.waypoints = waypoints;
+                enemyMovementWaypoint.speed = agentSpeed;
+                enemyMovementWaypoint.healthDecrease = (int)damage;
+                enemyMovementWaypoint.goldIncrease = (int)gold;
                 enemyMovementWaypoint.StartMoving();
 
-                //Increase enemy speed
-                UnityEngine.AI.NavMeshAgent agent = enemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
-                agent.speed += agentSpeedIncrease;
 
                 currentCount++;
                 spawnTimer = 0;
@@ -88,24 +99,66 @@ public class WaveManager : MonoBehaviour
     void StartWave1()
     {
         Debug.Log("Starting wave 1");
-        waveLength = 20;
-        spawnRate = 1.0f;
+        waveText.text = "1";
+        currentEnemy = enemyModels[0];
+        health = 2;
+        gold = 1;
+        damage = 1;
+        waveLength = 7;
+        spawnRate = 2.0f;
+        agentSpeed = 2.5f;
     }
 
     void StartWave2()
     {
         Debug.Log("Starting wave 2");
-        waveLength = 30;
-        spawnRate = 0.75f;
-        agentSpeedIncrease = 0.5f;
+        waveText.text = "2";
+        currentEnemy = enemyModels[0];
+        health = 4;
+        gold = 1;
+        damage = 1;
+        waveLength = 15;
+        spawnRate = 1.5f;
+        agentSpeed = 3.5f;
     }
 
     void StartWave3()
     {
         Debug.Log("Starting wave 3");
-        waveLength = 40;
-        spawnRate = 0.5f;
-        agentSpeedIncrease = 1f;
+        waveText.text = "3";
+        currentEnemy = enemyModels[1];
+        health = 8;
+        gold = 2;
+        damage = 1;
+        waveLength = 20;
+        spawnRate = 1.5f;
+        agentSpeed = 3.5f;
+    }
+
+    void StartWave4()
+    {
+        Debug.Log("Starting wave 4");
+        waveText.text = "4";
+        currentEnemy = enemyModels[1];
+        health = 12;
+        gold = 3;
+        damage = 3;
+        waveLength = 15;
+        spawnRate = 1.5f;
+        agentSpeed = 4.5f;
+    }
+
+    void StartWave5()
+    {
+        Debug.Log("Starting wave 5");
+        waveText.text = "5";
+        currentEnemy = enemyModels[2];
+        health = 300;
+        gold = 3;
+        damage = 10;
+        waveLength = 1;
+        spawnRate = 1f;
+        agentSpeed = 1.0f;
     }
 
     void NoWaves()

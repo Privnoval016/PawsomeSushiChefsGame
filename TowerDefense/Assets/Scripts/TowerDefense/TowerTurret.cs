@@ -13,7 +13,7 @@ public class TowerTurret : MonoBehaviour
     public float fireRate = 2f;
     public float ballSpeed = 2000f;
     public float lastFire = 0f;
-    public int damage = 1;
+    public float damage = 1;
 
 
     // Start is called before the first frame update
@@ -28,10 +28,6 @@ public class TowerTurret : MonoBehaviour
     {
         lastFire += Time.deltaTime;
         target = FindClosestDistance("Enemy", attackRange);
-
-        //Find nearest enemy
-        //TODO: find target in range that is closest to end of map
-        target = FindClosestTarget("Enemy", attackRange);
 
         if (target != null)
         {
@@ -49,7 +45,6 @@ public class TowerTurret : MonoBehaviour
                 //It's okay to Fire paintball
                 GameObject ball = Object.Instantiate(prefabPaintball, muzzle.transform.position, Quaternion.identity);
                 TowerBall ballScript = ball.GetComponent<TowerBall>();
-                ballScript.damage = damage;
 
                 //Launch ball
                 Rigidbody rigidBody = ball.GetComponent<Rigidbody>();
@@ -57,6 +52,9 @@ public class TowerTurret : MonoBehaviour
 
                 //Reset lastFire
                 lastFire = 0;
+                EnemyMovementWaypoint targetScript = target.GetComponent<EnemyMovementWaypoint>();
+                targetScript.health -= (int)damage;
+
             }
         }
     }
