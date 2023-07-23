@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb566fda7086f24db6a56eb89dc23c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  costs: 0a0000000c0000000e00000010000000
+  costs: 0a00000014000000190000001e000000
   level: 0
   launcherScript: {fileID: 4851365673283417796}
   type: -1
@@ -79,10 +79,10 @@ MonoBehaviour:
   - 7
   - 9
   damages:
-  - 1
-  - 3
+  - 2
   - 4
   - 5
+  - 6
   levelSkins:
   - {fileID: 2100000, guid: bfe5265d229ee944ab51664cee84745b, type: 2}
   - {fileID: 2100000, guid: 276d14f28056ba548ab03625a26185c8, type: 2}

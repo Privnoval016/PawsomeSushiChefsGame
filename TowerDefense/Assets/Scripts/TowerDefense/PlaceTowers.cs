@@ -74,20 +74,7 @@ public class PlaceTowers : MonoBehaviour
                     {
                         hideMenus();
 
-                        /*
-                        buildTowerPanel.SetActive(true);
-
-                        //Calculate the position of the UI element. 0,0 for the canvas is at the center of the screen,
-                        //whereas WorldToViewPortPoint treats the lower left corner as 0,0. Because of this, you need
-                        //to subtract the height / width of the canvas * 0.5 to get the correct position.
-                        Vector2 panelPosition = Camera.main.WorldToViewportPoint(towerSpawn.transform.position);
-
-                        Vector2 worldObjectScreenPosition = new Vector2(
-                            ((panelPosition.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
-                            ((panelPosition.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f)));
-
-                        panelRect.anchoredPosition = worldObjectScreenPosition;
-                        */
+                        
 
                        
 
@@ -143,11 +130,38 @@ public class PlaceTowers : MonoBehaviour
 
                         }
 
-                        
+                        else if (index == 2)
+                        {
+                            FreezeInfo towerStats = selectedTower.GetComponent<FreezeInfo>();
+                            if (towerStats.level <= 0 && ResourceManager.gold >= towerStats.costs[0])
+                            {
+                                ResourceManager.gold -= towerStats.costs[0];
+                                GameObject tower = GameObject.Instantiate(selectedTower,
+                                    new Vector3(towerSpawn.transform.position.x, towerSpawn.transform.position.y + 2,
+                                    towerSpawn.transform.position.z), towerSpawn.transform.rotation);
+
+                                towerSpawn.tower = tower;
+
+
+                                FreezeInfo currentTower = tower.GetComponent<FreezeInfo>();
+                                currentTower.type = 0;
+                                currentTower.level = 1;
+
+                                GameObject effect = GameObject.Instantiate(towerEffect,
+                                new Vector3(towerSpawn.transform.position.x, towerSpawn.transform.position.y + 1.2f,
+                                        towerSpawn.transform.position.z), Quaternion.Euler(90, 0, 0));
+                                Destroy(effect, 0.1f);
+
+                            }
+
+                        }
+
+
                     }
                 }
                 else if (hit.collider.gameObject.CompareTag("TurretTower"))
                 {
+                    hideMenus();
                     upgradeTower = hit.collider.gameObject;
                     
                     TurretInfo upgradeScript = upgradeTower.GetComponent<TurretInfo>();
@@ -176,6 +190,7 @@ public class PlaceTowers : MonoBehaviour
                 }
                 else if (hit.collider.gameObject.CompareTag("AOETower"))
                 {
+                    hideMenus();
                     upgradeTower = hit.collider.gameObject;
 
                     AOEInfo upgradeScript = upgradeTower.GetComponent<AOEInfo>();
@@ -183,13 +198,42 @@ public class PlaceTowers : MonoBehaviour
                     if (upgradeScript.level < 4)
                     {
                         upgradeMenu.GetComponentInChildren<TMP_Text>().text =
-                            "Wasabi\r\nBomb\r\nLevel: " + upgradeScript.level + "\r\nRadius ↑\r\nDamage ↑\r\n$" +
+                            "Wasabi Bomb\r\nLevel: " + upgradeScript.level + "\r\nRadius ↑\r\nDamage ↑\r\n$" +
                             upgradeScript.costs[upgradeScript.level];
                     }
                     else
                     {
                         upgradeMenu.GetComponentInChildren<TMP_Text>().text =
-                            "Wasabi\r\nBomb\r\nLevel: " + upgradeScript.level + "\r\n\r\nMax Level\r\nReached";
+                            "Wasabi Bomb\r\nLevel: " + upgradeScript.level + "\r\n\r\nMax Level\r\nReached";
+                    }
+
+                    upgradeMenu.SetActive(true);
+
+                    Vector2 panelPosition = Camera.main.WorldToViewportPoint(upgradeTower.GetComponent<Transform>().position);
+
+                    Vector2 worldObjectScreenPosition = new Vector2(
+                        ((panelPosition.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
+                        ((panelPosition.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f)));
+
+                    upgradeMenu.GetComponent<RectTransform>().anchoredPosition = worldObjectScreenPosition;
+                }
+                else if (hit.collider.gameObject.CompareTag("FreezeTower"))
+                {
+                    hideMenus();
+                    upgradeTower = hit.collider.gameObject;
+
+                    FreezeInfo upgradeScript = upgradeTower.GetComponent<FreezeInfo>();
+                    upgradeMenu = upgradeMenus[2];
+                    if (upgradeScript.level < 4)
+                    {
+                        upgradeMenu.GetComponentInChildren<TMP_Text>().text =
+                            "Flashfreeze\r\nLevel: " + upgradeScript.level + "\r\nDuration ↑\r\nDamage ↑\r\n$" +
+                            upgradeScript.costs[upgradeScript.level];
+                    }
+                    else
+                    {
+                        upgradeMenu.GetComponentInChildren<TMP_Text>().text =
+                            "Flashfreeze\r\nLevel: " + upgradeScript.level + "\r\n\r\nMax Level\r\nReached";
                     }
 
                     upgradeMenu.SetActive(true);
@@ -290,13 +334,13 @@ public class PlaceTowers : MonoBehaviour
             if (towerScript.level < 4)
             {
                 upgradeMenu.GetComponentInChildren<TMP_Text>().text =
-                    "Wasabi\r\nBomb\r\nLevel: " + towerScript.level + "\r\nRadius ↑\r\nDamage ↑\r\n$" +
+                    "Wasabi Bomb\r\nLevel: " + towerScript.level + "\r\nRadius ↑\r\nDamage ↑\r\n$" +
                     towerScript.costs[towerScript.level];
             }
             else
             {
                 upgradeMenu.GetComponentInChildren<TMP_Text>().text =
-                    "Wasabi\r\nBomb\r\nLevel: " + towerScript.level + "\r\n\r\nMax Level\r\nReached";
+                    "Wasabi Bomb\r\nLevel: " + towerScript.level + "\r\n\r\nMax Level\r\nReached";
             }
 
             GameObject effect = GameObject.Instantiate(towerEffect,
@@ -312,6 +356,52 @@ public class PlaceTowers : MonoBehaviour
     {
         Debug.Log("sell");
         AOEInfo towerScript = upgradeTower.GetComponent<AOEInfo>();
+        ResourceManager.gold += towerScript.costs[towerScript.level - 1];
+        Destroy(upgradeTower);
+
+        hideMenus();
+    }
+
+    public void upgradeFreezeTower()
+    {
+        Debug.Log("upgrade");
+        FreezeInfo towerScript = upgradeTower.GetComponent<FreezeInfo>();
+        upgradeMenu = upgradeMenus[1];
+        if (towerScript.level < 4 && ResourceManager.gold >= towerScript.costs[towerScript.level])
+        {
+            ResourceManager.gold -= towerScript.costs[towerScript.level];
+
+            towerScript.turretScript.freezeDuration = towerScript.freezeTimes[towerScript.level];
+            towerScript.turretScript.damage = towerScript.damages[towerScript.level];
+
+            towerScript.level++;
+            Debug.Log(towerScript.level);
+
+            if (towerScript.level < 4)
+            {
+                upgradeMenu.GetComponentInChildren<TMP_Text>().text =
+                    "Flashfreeze\r\nLevel: " + towerScript.level + "\r\nDuration ↑\r\nDamage ↑\r\n$" +
+                    towerScript.costs[towerScript.level];
+            }
+            else
+            {
+                upgradeMenu.GetComponentInChildren<TMP_Text>().text =
+                    "Flashfreeze\r\nLevel: " + towerScript.level + "\r\n\r\nMax Level\r\nReached";
+            }
+
+            GameObject effect = GameObject.Instantiate(towerEffect,
+                            new Vector3(upgradeTower.transform.position.x, upgradeTower.transform.position.y - 0.8f,
+                                        upgradeTower.transform.position.z), Quaternion.Euler(90, 0, 0));
+            Destroy(effect, 0.1f);
+
+            hideMenus();
+        }
+    }
+
+    public void sellFreezeTower()
+    {
+        Debug.Log("sell");
+        FreezeInfo towerScript = upgradeTower.GetComponent<FreezeInfo>();
         ResourceManager.gold += towerScript.costs[towerScript.level - 1];
         Destroy(upgradeTower);
 

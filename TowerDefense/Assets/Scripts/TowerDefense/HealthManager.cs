@@ -12,12 +12,20 @@ public class HealthManager : MonoBehaviour
                                         //Can be accessed without creating a new object.
     public int startingHealth = 10;
 
+    public GameObject menuButtons;
+    public GameObject endText;
+    public GameObject loseImage;
+
     // Start is called before the first frame update
     void Start()
     {
         healthText = GameObject.Find("Health").GetComponent<TMP_Text>();
         health = startingHealth;
         SetHealthText();
+
+        menuButtons.SetActive(false);
+        endText.SetActive(false);
+        loseImage.SetActive(false);
     }
 
     // Update is called once per frame
@@ -28,6 +36,11 @@ public class HealthManager : MonoBehaviour
         if (health <= 0)
         {
             Debug.Log("Game over!! Player lost!!");
+            menuButtons.SetActive(true);
+            endText.SetActive(true);
+            endText.GetComponent<TMP_Text>().text = "You Lost!";
+            loseImage.SetActive(true );
+            Time.timeScale = 0;
         }
     }
 

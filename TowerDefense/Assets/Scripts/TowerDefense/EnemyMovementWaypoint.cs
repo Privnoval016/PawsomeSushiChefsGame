@@ -14,6 +14,7 @@ public class EnemyMovementWaypoint : MonoBehaviour
     public float distanceToExit = 0;
     public int index = 0;
     public float speed = 3.5f;
+    public float accel = 8f;
     public int healthDecrease = 1;
     public int goldIncrease = 1;
 
@@ -21,6 +22,14 @@ public class EnemyMovementWaypoint : MonoBehaviour
     public GameObject sushiModel;
     public bool isEnemy;
     public bool hasSold = false;
+    public bool isEnd;
+    public bool isFrozen;
+    public float freezeDuration = 1f;
+    public float freezeCounter;
+    public WaveManager waveManager;
+
+    public bool hasPlayedFreezeEffect = false;
+    public GameObject freezeEffect;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +44,28 @@ public class EnemyMovementWaypoint : MonoBehaviour
     void Update()
     {
         
+        if (isFrozen) 
+        {
+            Debug.Log("slow");
+            agent.speed = speed/2;
+
+            if (!hasPlayedFreezeEffect)
+            {
+                GameObject freeze = GameObject.Instantiate(freezeEffect, fishModel.transform.position, Quaternion.identity);
+                Destroy(freeze, 0.2f);
+                hasPlayedFreezeEffect = true;
+            }
+            
+            freezeCounter += Time.deltaTime;
+            if (freezeCounter >= freezeDuration)
+            {
+                agent.speed = speed;
+                freezeCounter = 0;
+                isFrozen = false;
+                Debug.Log("not slow");
+            }
+            
+        }
         if (health <= 0)
         {
             if (!hasSold)
@@ -42,9 +73,16 @@ public class EnemyMovementWaypoint : MonoBehaviour
                 ResourceManager.IncreaseGold(goldIncrease);
                 hasSold = true;
             }
+            if (isEnd)
+            {
+                waveManager.endGame();
+            }
             fishModel.SetActive(false);
             sushiModel.SetActive(true);
             isEnemy = false;
+            isFrozen = false;
+            agent.speed = 8f;
+            agent.acceleration = 100;
             gameObject.tag = "Sushi";
         }
         distanceToExit = DistanceToEnd();
@@ -56,8 +94,10 @@ public class EnemyMovementWaypoint : MonoBehaviour
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.destination = waypoints[waypointIndex].transform.position;
         agent.speed = speed;
+        agent.acceleration = accel;
 
     }
+
 
     private void OnTriggerEnter(Collider other)
     {

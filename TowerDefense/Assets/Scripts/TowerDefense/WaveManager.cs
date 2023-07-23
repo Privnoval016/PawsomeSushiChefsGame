@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WaveManager : MonoBehaviour
 {
@@ -22,16 +24,29 @@ public class WaveManager : MonoBehaviour
     public float gold = 1;
     public GameObject currentEnemy;
     public TMP_Text waveText;
+    public GameObject waveUI;
+    public GameObject menuButtons;
+    public GameObject nextButton;
+    public GameObject endText;
+    public GameObject winImage;
+    public bool isEnd = false;
+    public float agentAccel = 8;
     // Start is called before the first frame update
     void Start()
     {
         spawnPoint = GameObject.Find("SpawnPoint");
+        waveUI = GameObject.Find("WaveUI");
 
         waveLength = 0;
         spawnTimer = 0;
         waveTimer = waveRate;
         currentCount = 0;
         waveNumber = 0;
+
+        menuButtons.SetActive(false);
+        nextButton.SetActive(false);
+        endText.SetActive(false);
+        winImage.SetActive(false);
     }
 
     // Update is called once per frame
@@ -80,11 +95,15 @@ public class WaveManager : MonoBehaviour
                 GameObject enemy = Object.Instantiate(currentEnemy, spawnPoint.transform.position, Quaternion.identity);
                 EnemyMovementWaypoint enemyScript = enemy.GetComponent<EnemyMovementWaypoint>();
                 enemyScript.health = (int)health;
+
+                enemyScript.isEnd = isEnd;
+                enemyScript.waveManager = gameObject.GetComponent<WaveManager>();
                 
                 //Initialize the enemy object (i.e. give it the waypoints, start it moving)
                 EnemyMovementWaypoint enemyMovementWaypoint = enemy.GetComponent<EnemyMovementWaypoint>();
                 enemyMovementWaypoint.waypoints = waypoints;
                 enemyMovementWaypoint.speed = agentSpeed;
+                enemyMovementWaypoint.accel = agentAccel;
                 enemyMovementWaypoint.healthDecrease = (int)damage;
                 enemyMovementWaypoint.goldIncrease = (int)gold;
                 enemyMovementWaypoint.StartMoving();
@@ -100,65 +119,81 @@ public class WaveManager : MonoBehaviour
     {
         Debug.Log("Starting wave 1");
         waveText.text = "1";
+        waveUI.GetComponent<RawImage>().color = new Color(0.961f, 0.314f, 0, 1);
         currentEnemy = enemyModels[0];
-        health = 2;
-        gold = 1;
+        health = 3;
+        gold = 2;
         damage = 1;
-        waveLength = 7;
+        waveLength = 8;
         spawnRate = 2.0f;
-        agentSpeed = 2.5f;
+        isEnd = false;
+        agentSpeed = 3f;
+        agentAccel = 8;
     }
 
     void StartWave2()
     {
         Debug.Log("Starting wave 2");
         waveText.text = "2";
+        waveUI.GetComponent<RawImage>().color = new Color(0.961f, 0.314f, 0, 1);
         currentEnemy = enemyModels[0];
-        health = 4;
-        gold = 1;
+        health = 8;
+        gold = 3;
         damage = 1;
         waveLength = 15;
         spawnRate = 1.5f;
+        isEnd = false;
         agentSpeed = 3.5f;
+        agentAccel = 8;
     }
 
     void StartWave3()
     {
         Debug.Log("Starting wave 3");
         waveText.text = "3";
+        waveUI.GetComponent<RawImage>().color = new Color(0.165f, 0.404f, 0.737f, 1);
         currentEnemy = enemyModels[1];
-        health = 8;
-        gold = 2;
+        health = 14;
+        gold = 5;
         damage = 1;
         waveLength = 20;
-        spawnRate = 1.5f;
+        spawnRate = 2f;
+        isEnd = false;
         agentSpeed = 3.5f;
+        agentAccel = 8;
     }
 
     void StartWave4()
     {
         Debug.Log("Starting wave 4");
         waveText.text = "4";
+        waveUI.GetComponent<RawImage>().color = new Color(0.165f, 0.404f, 0.737f, 1);
         currentEnemy = enemyModels[1];
-        health = 12;
-        gold = 3;
+        health = 24;
+        gold = 5;
         damage = 3;
         waveLength = 15;
         spawnRate = 1.5f;
+        isEnd = false;
         agentSpeed = 4.5f;
+        agentAccel = 8;
     }
 
     void StartWave5()
     {
         Debug.Log("Starting wave 5");
         waveText.text = "5";
+        waveUI.GetComponent<RawImage>().color = new Color(0.804f, 0.580f, 0.192f, 1);
         currentEnemy = enemyModels[2];
         health = 300;
-        gold = 3;
+        gold = 100;
         damage = 10;
         waveLength = 1;
         spawnRate = 1f;
-        agentSpeed = 1.0f;
+        isEnd = true;
+        agentSpeed = 3.0f;
+        agentAccel = 3;
+
     }
 
     void NoWaves()
@@ -166,5 +201,17 @@ public class WaveManager : MonoBehaviour
         Debug.Log("No more waves!");
         waveLength = 0;
         spawnRate = 10000000f;
+    }
+
+    public void endGame()
+    {
+        Debug.Log("yahoo");
+        menuButtons.SetActive(true);
+        nextButton.SetActive(true);
+        endText.SetActive(true);
+        endText.GetComponent<TMP_Text>().text = "You Win!";
+        winImage.SetActive(true) ;
+
+
     }
 }

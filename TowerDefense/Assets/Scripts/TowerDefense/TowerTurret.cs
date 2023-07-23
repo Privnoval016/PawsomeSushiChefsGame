@@ -43,7 +43,7 @@ public class TowerTurret : MonoBehaviour
             if (lastFire >= fireRate)
             {
                 //It's okay to Fire paintball
-                GameObject ball = Object.Instantiate(prefabPaintball, muzzle.transform.position, Quaternion.identity);
+                GameObject ball = Object.Instantiate(prefabPaintball, muzzle.transform.position, gameObject.transform.rotation);
                 TowerBall ballScript = ball.GetComponent<TowerBall>();
 
                 //Launch ball

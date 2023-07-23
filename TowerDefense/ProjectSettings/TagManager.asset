@@ -12,6 +12,7 @@ TagManager:
   - TurretTower
   - AOETower
   - Sushi
+  - FreezeTower
   layers:
   - Default
   - TransparentFX
